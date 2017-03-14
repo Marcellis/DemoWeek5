@@ -16,6 +16,8 @@ import java.util.ArrayList;
 
 public class GeoObjectAdapter extends RecyclerView.Adapter<GeoObjectAdapter.ViewHolder> {
 
+
+    private GeoObjectCellSelected mGeoObjectCellSelected;
     private ArrayList<GeoObject> mGeoObject;
     private Context mContext;
 
@@ -39,16 +41,45 @@ public class GeoObjectAdapter extends RecyclerView.Adapter<GeoObjectAdapter.View
 
     }
 
+
+
+
+
+
     @Override
-    public void onBindViewHolder(GeoObjectAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(GeoObjectAdapter.ViewHolder holder, final int position) {
         holder.tv.setText(mGeoObject.get(position).getmGeoName());
         holder.img.setImageResource(mGeoObject.get(position).getmGeoImageName());
+
+        mGeoObjectCellSelected = (GeoObjectCellSelected) mContext;
+
+//Set onClickListener
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //Obtain the geo object
+                GeoObject clickedGeoObject = mGeoObject.get(position);
+
+                //We have to create the DetailFragment through MainActivity
+                //Call the ReminderRowSelected function in MainActivity
+                mGeoObjectCellSelected.GeoObjectCellSelected(
+                        clickedGeoObject.getmGeoImageName());
+            }
+        });
+
+
 
     }
 
     @Override
     public int getItemCount() {
         return mGeoObject.size();
+    }
+
+
+    public interface GeoObjectCellSelected {
+        void GeoObjectCellSelected( int geoOjectImageID);
     }
 
     //Data class containing one 'window' of the grid

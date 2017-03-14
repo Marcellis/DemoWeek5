@@ -17,12 +17,9 @@ import java.util.ArrayList;
 import static com.example.marmm.geodemo.GeoObject.PRE_DEFINED_GEO_OBJECT_IMAGE_IDS;
 import static com.example.marmm.geodemo.GeoObject.PRE_DEFINED_GEO_OBJECT_NAMES;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GeoObjectAdapter.GeoObjectCellSelected {
 
 
-    private ArrayList<GeoObject> mGeoObjects;
-    private GeoObjectAdapter mAdapter;
-    private RecyclerView mGeoRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,26 +28,14 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mGeoRecyclerView = (RecyclerView) findViewById(R.id.geoRecyclerview);
 
-
-        mGeoObjects = new ArrayList<GeoObject>();
-
-        for(int i=0; i<PRE_DEFINED_GEO_OBJECT_NAMES.length; i++) {
-
-            mGeoObjects.add(new GeoObject(PRE_DEFINED_GEO_OBJECT_NAMES[i], PRE_DEFINED_GEO_OBJECT_IMAGE_IDS[i]));
-        }
-
-
-        // some examples with different layouts
-      LinearLayoutManager mLayoutManager
-              = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-
-//        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 3); //2 cells per row
-        mGeoRecyclerView.setLayoutManager(mLayoutManager);
-
-        mAdapter = new GeoObjectAdapter(this, mGeoObjects);
-        mGeoRecyclerView.setAdapter(mAdapter);
+        RecyclerFragment recyclerFragment = new RecyclerFragment();
+//and make it active through the FragmentManager class
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.recyclerFragment, recyclerFragment, "recyclerFragment")
+                .addToBackStack(null)
+                .commit();
 
     }
 
@@ -75,4 +60,19 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void GeoObjectCellSelected(int geoOjectImageID) {
+        //Create an instance of the DetailFragment class
+        DetailFragment detailFragment = DetailFragment.newInstance(geoOjectImageID);
+
+        //and make it active through the FragmentManager class
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.detailFragment, detailFragment, "detailFragment")
+                .addToBackStack(null)
+                .commit();
+    }
+
 }
+
